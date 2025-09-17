@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SubTrack - Manage Your Subscriptions</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    body {
+      background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('images/background.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      min-height: 100vh;
+      color: #fff;
+    }
+    /* Navbar */
+    .navbar {
+      background-color: rgba(0, 0, 0, 0.6);
+    }
+    .navbar-brand {
+      font-weight: bold;
+      font-size: 1.5rem;
+      color: #fff !important;
+    }
+    .nav-link {
+      color: #ddd !important;
+      margin-right: 15px;
+    }
+    .nav-link:hover {
+      color: #fff !important;
+    }
+    .btn-gradient {
+      background: linear-gradient(to right, #270D7D, #281A84, #2C4FA0, #2D5CA7);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+    .btn-gradient:hover {
+      background: linear-gradient(to right, #2D5CA7, #2C4FA0, #281A84, #270D7D);
+      color: #fff;
+    }
+
+    /* Hero */
+    .hero {
+      padding: 100px 50px;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #fff;
+    }
+    .hero p {
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+      color: #ddd;
+    }
+
+    /* Features */
+    .features {
+      padding: 60px 30px;
+      text-align: center;
+    }
+    .features h2 {
+      margin-bottom: 40px;
+      font-weight: bold;
+      color: #fff;
+    }
+    .feature-card {
+      background-color: rgba(255,255,255,0.9);
+      border-radius: 12px;
+      padding: 30px 20px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      color: #000;
+    }
+    .feature-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 12px 25px rgba(0,0,0,0.25);
+    }
+    .feature-card i {
+      font-size: 2rem;
+      margin-bottom: 15px;
+      color: #270D7D;
+    }
+
+    
+    footer {
+  background-color: rgba(0,0,0,0.85);
+  color: #fff;
+  padding: 40px 20px;
+}
+footer h5 {
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+footer a:hover {
+  text-decoration: underline;
+}
+
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+      <a class="navbar-brand" href="#">SubTrack</a>
+      <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="./Homepage.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="./EventList.html">Event List</a></li>          
+          <li class="nav-item"><a class="nav-link" href="./Contact.html">Contact</a></li>
+          <li class="nav-item"><a class="nav-link" href="./About.html">About</a></li>
+        </ul>
+        <a href="logout.html" class="btn btn-gradient ms-3">Log Out</a>
+        
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <h1>Manage All Your Subscriptions in One Place</h1>
+      <p>Track Netflix, Spotify, Hotstar, AWS & more. Get reminders, control spending, and never miss a renewal.</p>
+      <a href="DashBoard.html" class="btn btn-gradient btn-lg">Get Started Free</a>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features">
+    <div class="container">
+      <h2>Why Choose SubTrack?</h2>
+      <div class="row g-4">
+        <div class="col-md-3">
+          <div class="feature-card">
+            <i class="fa fa-bell"></i>
+            <h5>Smart Reminders</h5>
+            <p>Get notified before any subscription renews.</p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="feature-card">
+            <i class="fa fa-chart-line"></i>
+            <h5>Expense Insights</h5>
+            <p>Track your monthly & yearly spending.</p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="feature-card">
+            <i class="fa fa-ban"></i>
+            <h5>Cancel Anytime</h5>
+            <p>Stop paying for services you don’t use.</p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="feature-card">
+            <i class="fa fa-layer-group"></i>
+            <h5>All in One</h5>
+            <p>Entertainment, productivity & cloud services.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+    <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row text-start">
+        
+        <!-- About -->
+        <div class="col-md-4 mb-4">
+          <h5>About SubTrack</h5>
+          <p>SubTrack helps you manage all your app subscriptions in one place. Get reminders, track expenses, and avoid paying for unused services.</p>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="col-md-4 mb-4">
+          <h5>Quick Links</h5>
+          <ul class="list-unstyled">
+            <li><a href="./Homepage.html" class="text-white text-decoration-none">Home</a></li>
+            <li><a href="./EventList.html" class="text-white text-decoration-none">Event List</a></li>
+            <li><a href="./Contact.html" class="text-white text-decoration-none">Contact</a></li>
+            <li><a href="./About.html" class="text-white text-decoration-none">About</a></li>
+          </ul>
+        </div>
+
+        <!-- Contact & Social -->
+        <div class="col-md-4 mb-4">
+          <h5>Contact Us</h5>
+          <p><i class="fa fa-envelope"></i> support@subtrack.com</p>
+          <p><i class="fa fa-phone"></i> +91 98765 43210</p>
+          <div class="mt-2">
+            <a href="#" class="text-white me-3"><i class="fab fa-facebook fa-lg"></i></a>
+            <a href="#" class="text-white me-3"><i class="fab fa-twitter fa-lg"></i></a>
+            <a href="#" class="text-white me-3"><i class="fab fa-instagram fa-lg"></i></a>
+            <a href="#" class="text-white"><i class="fab fa-linkedin fa-lg"></i></a>
+          </div>
+        </div>
+
+      </div>
+      <hr style="background-color: rgba(255,255,255,0.3);">
+      
+    </div>
+  </footer>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
