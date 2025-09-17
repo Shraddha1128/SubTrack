@@ -129,12 +129,29 @@ footer a:hover {
 
   <!-- Hero Section -->
   <section class="hero">
-    <div class="container">
-      <h1>Manage All Your Subscriptions in One Place</h1>
-      <p>Track Netflix, Spotify, Hotstar, AWS & more. Get reminders, control spending, and never miss a renewal.</p>
-      <a href="DashBoard.html" class="btn btn-gradient btn-lg">Get Started Free</a>
-    </div>
-  </section>
+  <div class="container">
+    <h1>Manage All Your Subscriptions in One Place</h1>
+    <p>Track Netflix, Spotify, Hotstar, AWS & more. Get reminders, control spending, and never miss a renewal.</p>
+    <a id="getStartedBtn" class="btn btn-gradient btn-lg">Get Started Free</a> 
+  </div>
+</section>
+
+<script>
+  // Get the logged-in user from localStorage
+  const user = JSON.parse(localStorage.getItem('user'))
+
+  if(user){
+    console.log(user.name)   // "Shraddha"
+    console.log(user.email)  // "shraddha@example.com"
+
+    // Set the button href dynamically with user ID
+    document.getElementById('getStartedBtn').href = `DashBoard.html?id=${user.id}`
+  } else {
+    // Optional: redirect to login if no user
+    document.getElementById('getStartedBtn').href = 'Login.html'
+  }
+</script>
+  
 
   <!-- Features Section -->
   <section class="features">

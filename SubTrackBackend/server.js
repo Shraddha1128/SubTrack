@@ -5,6 +5,7 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const path = require('path')
 
+
 const app = express()
 app.use(express.json())
 
@@ -26,9 +27,9 @@ db.connect(err => {
 
 // ===================== SIGNUP =====================
 app.post('/signup', async (req, res) => {
-    const { name, email, password, confirmPassword } = req.body
+    const { name, email, password, confirmPassword, phnumber } = req.body
 
-    if(!name || !email || !password || !confirmPassword) {
+    if(!name || !email || !password || !confirmPassword || !phnumber) {
         return res.status(400).send({ message: "All fields are required" })
     }
 
@@ -40,8 +41,8 @@ app.post('/signup', async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10)
         const profilePic = 'profile.png'
 
-        const sql = 'INSERT INTO users (name, email, password, profile_pic) VALUES (?, ?, ?, ?)'
-        db.query(sql, [name, email, hashedPassword, profilePic], (err, result) => {
+        const sql = 'INSERT INTO users (name, phnumber, email, password, profile_pic) VALUES (?, ?, ?, ?, ?)'
+        db.query(sql, [name, phnumber, email, hashedPassword, profilePic], (err, result) => {
             if(err){
                 console.error("Database Error:", err)  // <-- this will print the exact MySQL error
                 return res.status(500).send({ error: err.sqlMessage })
@@ -110,7 +111,9 @@ app.post('/login', async (req, res) => {
                 id: user.id,
                 name: user.name,
                 email: user.email,
-                profile_pic: `http://localhost:3000/images/${user.profile_pic}`
+                phnumber: user.phnumber,
+                profile_pic: `http://localhost:3000/images/${user.profile_pic}`,
+                created_at : user.created_at
             }
         })
     })

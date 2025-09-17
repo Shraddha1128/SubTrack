@@ -106,8 +106,10 @@ document.getElementById('loginBtn').addEventListener('click', async (e) => {
         if(data.user){
             alert(data.message)
             console.log('Logged in user:', data.user)
-            localStorage.setItem('user', JSON.stringify(data.user))
-            window.location.href = 'Homepage1.html'
+             localStorage.setItem('user', JSON.stringify(data.user))
+
+            // Redirect with user ID as query parameter
+            window.location.href = `Homepage1.html?id=${data.user.id}`
         } else {
             alert(data.message)
         }

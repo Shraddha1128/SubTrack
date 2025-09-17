@@ -70,6 +70,10 @@
               <input type="text" class="form-control" id="name" placeholder="Enter your Full Name" required>
             </div>
             <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fa fa-phone"></i></span>
+              <input type="text" class="form-control" id="phnumber" placeholder="Enter your Phone Number" required>
+            </div>
+            <div class="mb-3 input-group">
               <span class="input-group-text"><i class="fa fa-envelope"></i></span>
               <input type="email" class="form-control" id="email" placeholder="Enter Email" required>
             </div>
@@ -100,6 +104,7 @@ document.getElementById('signupBtn').addEventListener('click', async (e) => {
 
     const name = document.getElementById('name').value
     const email = document.getElementById('email').value
+    const phnumber = document.getElementById('phnumber').value
     const password = document.getElementById('password').value
     const confirmPassword = document.getElementById('confirmpassword').value
 
@@ -107,7 +112,8 @@ document.getElementById('signupBtn').addEventListener('click', async (e) => {
         const res = await fetch('http://localhost:3000/signup', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, email, password, confirmPassword })
+            body: JSON.stringify({ name, email, password, confirmPassword, phnumber })
+
         })
 
         const data = await res.json()

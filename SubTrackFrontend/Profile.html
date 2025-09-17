@@ -139,7 +139,7 @@
       </button>
       <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
         <ul class="navbar-nav">
-          <li class="nav-item"><a class="nav-link" href="./Homepage.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="./DashBoard.html">Home</a></li>
           <li class="nav-item"><a class="nav-link" href="./subscriptions.html">My Subscriptions</a></li>
           <li class="nav-item"><a class="nav-link" href="./Contact.html">Contact</a></li>
           <li class="nav-item"><a class="nav-link active" href="#">Profile</a></li>
@@ -166,10 +166,10 @@
   </div>
 
   <div class="ms-3">
-    <h2>Shraddha Vispute</h2>
-    <p><i class="fa fa-envelope"></i> shraddha@example.com</p>
-    <p><i class="fa fa-phone"></i> +91 9876543210</p>
-    <p><i class="fa fa-calendar"></i> Member since: Jan 2024</p>
+    <h2 id="username"></h2>
+    <p id="useremail"><i class="fa fa-envelope"></i></p>
+    <p id="phnumber"><i class="fa fa-phone"></i> +91 </p>
+    <p id="date"><i class="fa fa-calendar"></i> Member since: </p>
     <a href="edit-profile.html" class="btn btn-gradient mt-2"><i class="fa fa-edit"></i> Edit Profile</a>
     <a href="change-password.html" class="btn btn-gradient mt-2"><i class="fa fa-lock"></i> Change Password</a>
   </div>
@@ -227,4 +227,29 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+<script>
+  // Get user from localStorage
+  const user = JSON.parse(localStorage.getItem('user'))
+
+  if(user){
+      // Insert the user's name, email, and phone
+      document.getElementById('username').textContent = user.name
+      document.getElementById('useremail').textContent = user.email
+      document.getElementById('phnumber').textContent = `+91 ${user.phnumber}`
+
+      // Format the created_at date as YYYY-MM-DD
+      if(user.created_at){
+          const createdDate = new Date(user.created_at)
+          const year = createdDate.getFullYear()
+          const month = String(createdDate.getMonth() + 1).padStart(2, '0')
+          const day = String(createdDate.getDate()).padStart(2, '0')
+          document.getElementById('date').textContent = `Member since: ${day}-${month}-${year}`
+      }
+  } else {
+      // Optional: redirect to login if no user is found
+      window.location.href = 'Login.html'
+  }
+</script>
+
+
 </html>

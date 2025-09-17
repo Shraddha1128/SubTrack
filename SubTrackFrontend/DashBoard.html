@@ -197,8 +197,12 @@
                 </nav>
             </div>
 
-            <div class="col-12 col-lg-10 dashboard" id="mainContent">
-                <h2>Welcome Back, Shraddha 👋</h2>
+           <div class="col-12 col-lg-10 dashboard" id="mainContent">
+    <h2 id="welcomeText">Welcome Back 👋</h2>
+
+
+
+
 
                 <div class="row g-4">
                     <div class="col-12 col-md-6 col-lg-3">
@@ -299,4 +303,16 @@
         });
     </script>
 </body>
+<script>
+  // Get user from localStorage
+  const user = JSON.parse(localStorage.getItem('user'))
+
+  if(user){
+      // Insert the user's name into the h2
+      document.getElementById('welcomeText').textContent = `Welcome Back, ${user.name} 👋`
+  } else {
+      // Optional: redirect to login if no user is found
+      window.location.href = 'Login.html'
+  }
+</script>
 </html>
