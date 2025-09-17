@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SubTrack - User Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <style>
+        body {
+            background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), url('images/background.jpg');
+            background-size: cover;
+            background-position: center;
+            min-height: 100vh;
+            color: #fff;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: #fff !important;
+        }
+        .nav-link {
+            color: #ddd !important;
+            margin-right: 15px;
+        }
+        .nav-link:hover {
+            color: #fff !important;
+        }
+        .btn-gradient {
+            background: linear-gradient(to right, #270D7D, #281A84, #2C4FA0, #2D5CA7);
+            color: #fff;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        .btn-gradient:hover {
+            background: linear-gradient(to right, #2D5CA7, #2C4FA0, #281A84, #270D7D);
+        }
+
+        /* Dashboard Content */
+        .dashboard {
+            padding: 50px 30px;
+        }
+        @media (max-width: 767.98px) {
+            .dashboard {
+                padding: 20px 15px; /* Adjust padding for smaller screens */
+            }
+        }
+        .dashboard h2 {
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+        
+        /* Dashboard Cards */
+        .card-dashboard {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-dashboard:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        }
+        .card-dashboard i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #2D5CA7;
+        }
+        .card-dashboard h5 {
+            color: #fff;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .card-dashboard p {
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+
+        /* Recent Activity */
+        .activity {
+            margin-top: 40px;
+        }
+        .activity h4 {
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .activity-list {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+        }
+        .activity-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: #ccc;
+        }
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        .activity-item span {
+            color: #2D5CA7;
+            font-weight: bold;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            background: rgba(255, 255, 255, 0.05);
+            min-height: 100vh;
+            padding: 20px;
+            transition: transform 0.3s ease;
+        }
+        @media (max-width: 991.98px) {
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -220px; /* Hidden off-screen */
+                width: 220px;
+                height: 100%;
+                z-index: 1050;
+                transition: left 0.3s ease-in-out;
+            }
+            .sidebar.show {
+                left: 0; /* Slide in */
+            }
+            .main-content {
+                transition: margin-left 0.3s ease-in-out;
+            }
+            .main-content.pushed {
+                margin-left: 220px; /* Pushes content to the right */
+            }
+        }
+
+        /* Footer */
+        footer {
+            background-color: rgba(0,0,0,0.85);
+            color: #fff;
+            padding: 40px 20px;
+        }
+        footer h5 {
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#">SubTrack</a>
+
+            <button class="btn btn-gradient ms-3 d-lg-none" id="sidebarToggle">
+                <i class="fa fa-bars"></i>
+            </button>
+
+            <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="./Homepage.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="./EventList.html">Plans</a></li>
+                    <li class="nav-item"><a class="nav-link" href="./Contact.html">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link" href="./About.html">About</a></li>
+                </ul>
+                <a href="logout.html" class="btn btn-gradient ms-3">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            
+            <div class="col-lg-2 sidebar" id="sidebar">
+                <h4>Menu</h4>
+                <nav class="nav flex-column">
+                    <a class="nav-link active" href="#"><i class="fa fa-home"></i> Dashboard</a>
+                    <a class="nav-link" href="#"><i class="fa fa-list"></i> My Subscriptions</a>
+                    <a class="nav-link" href="#"><i class="fa fa-bell"></i> Reminders</a>
+                    <a class="nav-link" href="#"><i class="fa fa-wallet"></i> Billing</a>
+                    <a class="nav-link" href="#"><i class="fa fa-user"></i> Profile</a>
+                </nav>
+            </div>
+
+            <div class="col-12 col-lg-10 dashboard" id="mainContent">
+                <h2>Welcome Back, Shraddha 👋</h2>
+
+                <div class="row g-4">
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card-dashboard">
+                            <i class="fa fa-list"></i>
+                            <h5>Active Subscriptions</h5>
+                            <p>12 Plans</p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card-dashboard">
+                            <i class="fa fa-bell"></i>
+                            <h5>Upcoming Renewals</h5>
+                            <p>3 This Week</p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card-dashboard">
+                            <i class="fa fa-chart-line"></i>
+                            <h5>Monthly Spending</h5>
+                            <p>₹2,500</p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card-dashboard">
+                            <i class="fa fa-wallet"></i>
+                            <h5>Savings</h5>
+                            <p>₹1,200</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="activity">
+                    <h4>Recent Activity</h4>
+                    <div class="activity-list">
+                        <div class="activity-item">
+                            <span>Netflix</span> Renewed – ₹499
+                        </div>
+                        <div class="activity-item">
+                            <span>Spotify</span> Upcoming Renewal – 20 Sept
+                        </div>
+                        <div class="activity-item">
+                            <span>AWS</span> Payment Due – ₹1,200
+                        </div>
+                        <div class="activity-item">
+                            <span>Hotstar</span> Cancelled
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="row text-start">
+                
+                <div class="col-md-4 mb-4">
+                    <h5>About SubTrack</h5>
+                    <p>SubTrack helps you manage all your app subscriptions in one place. Get reminders, track expenses, and avoid paying for unused services.</p>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="./Homepage.html" class="text-white text-decoration-none">Home</a></li>
+                        <li><a href="./EventList.html" class="text-white text-decoration-none">Event List</a></li>
+                        <li><a href="./Contact.html" class="text-white text-decoration-none">Contact</a></li>
+                        <li><a href="./About.html" class="text-white text-decoration-none">About</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-md-4 mb-4">
+                    <h5>Contact Us</h5>
+                    <p><i class="fa fa-envelope"></i> support@subtrack.com</p>
+                    <p><i class="fa fa-phone"></i> +91 98765 43210</p>
+                    <div class="mt-2">
+                        <a href="#" class="text-white me-3"><i class="fab fa-facebook fa-lg"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-twitter fa-lg"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-instagram fa-lg"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-linkedin fa-lg"></i></a>
+                    </div>
+                </div>
+
+            </div>
+            <hr style="background-color: rgba(255,255,255,0.3);">
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById('sidebarToggle');
+        const mainContent = document.getElementById('mainContent');
+
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('show');
+        });
+    </script>
+</body>
+</html>
