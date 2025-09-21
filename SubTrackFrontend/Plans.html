@@ -3,22 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SubTrack - Manage Your Subscriptions</title>
+  <title>SubTrack - Subscription Plans</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
     body {
-      background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('images/background.jpg');
+      background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.8)), url('images/background.jpg');
       background-size: cover;
       background-position: center;
-      background-repeat: no-repeat;
       min-height: 100vh;
       color: #fff;
     }
+
     /* Navbar */
     .navbar {
-      background-color: rgba(0, 0, 0, 0.6);
+      background-color: rgba(0, 0, 0, 0.7);
     }
     .navbar-brand {
       font-weight: bold;
@@ -45,64 +45,65 @@
       color: #fff;
     }
 
-    /* Hero */
-    .hero {
-      padding: 100px 50px;
+    /* Plans Section */
+    .plans {
+      padding: 80px 30px;
       text-align: center;
     }
-    .hero h1 {
-      font-size: 3rem;
+    .plans h2 {
       font-weight: bold;
       margin-bottom: 20px;
       color: #fff;
     }
-    .hero p {
-      font-size: 1.2rem;
-      margin-bottom: 30px;
+    .plans p {
+      color: #bbb;
+      margin-bottom: 50px;
+    }
+    .plan-card {
+      background-color: rgba(255,255,255,0.1);
+      border-radius: 15px;
+      padding: 30px;
+      color: #fff;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .plan-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+    }
+    .plan-price {
+      font-size: 2rem;
+      font-weight: bold;
+      margin: 15px 0;
+      color: #FFD700;
+    }
+    .plan-features {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 20px;
+    }
+    .plan-features li {
+      margin: 10px 0;
       color: #ddd;
     }
-
-    /* Features */
-    .features {
-      padding: 60px 30px;
-      text-align: center;
-    }
-    .features h2 {
-      margin-bottom: 40px;
-      font-weight: bold;
-      color: #fff;
-    }
-    .feature-card {
-      background-color: rgba(255,255,255,0.9);
-      border-radius: 12px;
-      padding: 30px 20px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      color: #000;
-    }
-    .feature-card:hover {
-      transform: scale(1.05);
-      box-shadow: 0 12px 25px rgba(0,0,0,0.25);
-    }
-    .feature-card i {
-      font-size: 2rem;
-      margin-bottom: 15px;
-      color: #270D7D;
+    .plan-features li i {
+      color: #00ff99;
+      margin-right: 8px;
     }
 
-    
+    /* Footer */
     footer {
-  background-color: rgba(0,0,0,0.85);
-  color: #fff;
-  padding: 40px 20px;
-}
-footer h5 {
-  font-weight: bold;
-  margin-bottom: 15px;
-}
-footer a:hover {
-  text-decoration: underline;
-}
-
+      background-color: rgba(0,0,0,0.85);
+      color: #fff;
+      padding: 40px 20px;
+    }
+    footer h5 {
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -116,104 +117,91 @@ footer a:hover {
       </button>
       <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
         <ul class="navbar-nav">
-          <li class="nav-item"><a class="nav-link" href="./Homepage.html">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="./EventList.html">Event List</a></li>          
+          <li class="nav-item"><a class="nav-link" href="./DashBoard.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link active" href="./Plans.html">Event List</a></li>
           <li class="nav-item"><a class="nav-link" href="./Contact.html">Contact</a></li>
           <li class="nav-item"><a class="nav-link" href="./About.html">About</a></li>
         </ul>
-        <a href="logout.html" class="btn btn-gradient ms-3">Log Out</a>
-        
+       
       </div>
     </div>
   </nav>
 
-  <!-- Hero Section -->
-  <section class="hero">
-  <div class="container">
-    <h1>Manage All Your Subscriptions in One Place</h1>
-    <p>Track Netflix, Spotify, Hotstar, AWS & more. Get reminders, control spending, and never miss a renewal.</p>
-    <a id="getStartedBtn" class="btn btn-gradient btn-lg">Get Started Free</a> 
-  </div>
-</section>
-
-<script>
-  // Get the logged-in user from localStorage
-  const user = JSON.parse(localStorage.getItem('user'))
-
-  if(user){
-    console.log(user.name)   // "Shraddha"
-    console.log(user.email)  // "shraddha@example.com"
-
-    // Set the button href dynamically with user ID
-    document.getElementById('getStartedBtn').href = `DashBoard.html?id=${user.id}`
-  } else {
-    // Optional: redirect to login if no user
-    document.getElementById('getStartedBtn').href = 'Login.html'
-  }
-</script>
-  
-
-  <!-- Features Section -->
-  <section class="features">
+  <!-- Subscription Plans Section -->
+  <section class="plans">
     <div class="container">
-      <h2>Why Choose SubTrack?</h2>
+      <h2>Choose Your Plan</h2>
+      <p>Flexible plans to suit your needs. Cancel anytime.</p>
       <div class="row g-4">
-        <div class="col-md-3">
-          <div class="feature-card">
-            <i class="fa fa-bell"></i>
-            <h5>Smart Reminders</h5>
-            <p>Get notified before any subscription renews.</p>
+        
+        <!-- Free Plan -->
+        <div class="col-md-4">
+          <div class="plan-card">
+            <h4>Free Plan</h4>
+            <div class="plan-price">₹0 / month</div>
+            <ul class="plan-features">
+              <li><i class="fa fa-check-circle"></i> Track up to 3 subscriptions</li>
+              <li><i class="fa fa-check-circle"></i> Basic reminders</li>
+              <li><i class="fa fa-check-circle"></i> Expense overview</li>
+            </ul>
+            <a href="signup.html" class="btn btn-gradient w-100">Get Started</a>
           </div>
         </div>
-        <div class="col-md-3">
-          <div class="feature-card">
-            <i class="fa fa-chart-line"></i>
-            <h5>Expense Insights</h5>
-            <p>Track your monthly & yearly spending.</p>
+
+        <!-- Basic Plan -->
+        <div class="col-md-4">
+          <div class="plan-card">
+            <h4>Basic Plan</h4>
+            <div class="plan-price">₹199 / month</div>
+            <ul class="plan-features">
+              <li><i class="fa fa-check-circle"></i> Track unlimited subscriptions</li>
+              <li><i class="fa fa-check-circle"></i> Smart reminders & alerts</li>
+              <li><i class="fa fa-check-circle"></i> Monthly expense insights</li>
+              <li><i class="fa fa-check-circle"></i> Email support</li>
+            </ul>
+            <a href="signup.html" class="btn btn-gradient w-100">Subscribe</a>
           </div>
         </div>
-        <div class="col-md-3">
-          <div class="feature-card">
-            <i class="fa fa-ban"></i>
-            <h5>Cancel Anytime</h5>
-            <p>Stop paying for services you don’t use.</p>
+
+        <!-- Premium Plan -->
+        <div class="col-md-4">
+          <div class="plan-card">
+            <h4>Premium Plan</h4>
+            <div class="plan-price">₹499 / month</div>
+            <ul class="plan-features">
+              <li><i class="fa fa-check-circle"></i> All Basic Plan features</li>
+              <li><i class="fa fa-check-circle"></i> AI-based recommendations</li>
+              <li><i class="fa fa-check-circle"></i> Detailed yearly analytics</li>
+              <li><i class="fa fa-check-circle"></i> Priority 24/7 support</li>
+            </ul>
+            <a href="signup.html" class="btn btn-gradient w-100">Go Premium</a>
           </div>
         </div>
-        <div class="col-md-3">
-          <div class="feature-card">
-            <i class="fa fa-layer-group"></i>
-            <h5>All in One</h5>
-            <p>Entertainment, productivity & cloud services.</p>
-          </div>
-        </div>
+
       </div>
     </div>
   </section>
 
   <!-- Footer -->
-    <!-- Footer -->
   <footer>
     <div class="container">
       <div class="row text-start">
-        
         <!-- About -->
         <div class="col-md-4 mb-4">
           <h5>About SubTrack</h5>
           <p>SubTrack helps you manage all your app subscriptions in one place. Get reminders, track expenses, and avoid paying for unused services.</p>
         </div>
-
         <!-- Quick Links -->
         <div class="col-md-4 mb-4">
           <h5>Quick Links</h5>
           <ul class="list-unstyled">
-            <li><a href="./Homepage1.html" class="text-white text-decoration-none">Home</a></li>
-            <li><a href="./EventList.html" class="text-white text-decoration-none">Event List</a></li>
+            <li><a href="./Homepage.html" class="text-white text-decoration-none">Home</a></li>
+            <li><a href="./Plans.html" class="text-white text-decoration-none">Event List</a></li>
             <li><a href="./Contact.html" class="text-white text-decoration-none">Contact</a></li>
             <li><a href="./About.html" class="text-white text-decoration-none">About</a></li>
           </ul>
         </div>
-
-        <!-- Contact & Social -->
+        <!-- Contact -->
         <div class="col-md-4 mb-4">
           <h5>Contact Us</h5>
           <p><i class="fa fa-envelope"></i> support@subtrack.com</p>
@@ -225,13 +213,10 @@ footer a:hover {
             <a href="#" class="text-white"><i class="fab fa-linkedin fa-lg"></i></a>
           </div>
         </div>
-
       </div>
       <hr style="background-color: rgba(255,255,255,0.3);">
-      
     </div>
   </footer>
-
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>

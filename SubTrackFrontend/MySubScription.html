@@ -1,146 +1,307 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SubTrack - My Subscriptions</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <style>
-    body {
-      background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), url('images/background.jpg');
-      background-size: cover;
-      background-position: center;
-      color: #fff;
-      font-family: 'Segoe UI', sans-serif;
-      min-height: 100vh;
-    }
-
-    .navbar {
-      background-color: rgba(0, 0, 0, 0.6);
-    }
-    .navbar-brand { font-weight: bold; font-size: 1.5rem; color: #fff !important; }
-    .nav-link { color: #ddd !important; margin-right: 15px; }
-    .nav-link:hover { color: #fff !important; }
-    .btn-gradient {
-      background: linear-gradient(to right, #270D7D, #281A84, #2C4FA0, #2D5CA7);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      padding: 8px 18px;
-      font-weight: bold;
-      transition: 0.3s ease;
-    }
-    .btn-gradient:hover {
-      background: linear-gradient(to right, #2D5CA7, #2C4FA0, #281A84, #270D7D);
-    }
-
-    /* Page Heading */
-    .page-title {
-      margin: 40px 0 20px 0;
-      font-weight: bold;
-      font-size: 2rem;
-    }
-
-    /* Subscription Cards */
-    .subscription-card {
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
-      padding: 25px;
-      text-align: center;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .subscription-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.4);
-    }
-    .subscription-card i {
-      font-size: 2rem;
-      margin-bottom: 10px;
-      color: #2D5CA7;
-    }
-    .subscription-card h5 {
-      color: #fff;
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-    .subscription-card p {
-      color: #ccc;
-      font-size: 0.9rem;
-    }
-
-    /* Action Buttons */
-    .subscription-card .btn {
-      margin-top: 15px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SubTrack - My Subscriptions</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+body {
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('images/background.jpg');
+    background-size: cover;
+    background-position: center;
+    color: #fff;
+    font-family: 'Segoe UI', sans-serif;
+    min-height: 100vh;
+}
+.navbar { background-color: rgba(0,0,0,0.6); }
+.navbar-brand { font-weight: bold; color: #fff !important; }
+.nav-link { color: #ddd !important; margin-right: 15px; }
+.nav-link:hover { color: #fff !important; }
+.btn-gradient {
+    background: linear-gradient(to right, #270D7D, #2D5CA7);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+}
+.btn-gradient:hover {
+    background: linear-gradient(to right, #2D5CA7, #270D7D);
+    color: #fff;
+}
+.card-sub {
+    position: relative;
+    background: rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    color: #fff;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card-sub:hover {
+    transform: scale(1.03);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+.card-sub h5 { color: #fff; }
+.card-sub p { color: #ccc; }
+.card-sub button { margin-top: 10px; }
+.status-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 5px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #fff;
+}
+.status-active { background-color: #28a745; }
+.status-expired { background-color: #dc3545; }
+.status-paused { background-color: #ffc107; }
+.user-paused {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+.dropdown-menu {
+    background-color: #1e1e2f;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.dropdown-item { color: #fff; }
+.dropdown-item:hover { background-color: #3f3f5a; color: #fff; }
+</style>
 </head>
 <body>
 
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg">
-    <div class="container">
-      <a class="navbar-brand" href="#">SubTrack</a>
-      <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-        <ul class="navbar-nav">
-          <li class="nav-item"><a class="nav-link" href="./Homepage.html">Home</a></li>
-          <li class="nav-item"><a class="nav-link active" href="#">My Subscriptions</a></li>
-          <li class="nav-item"><a class="nav-link" href="./Contact.html">Contact</a></li>
-          <li class="nav-item"><a class="nav-link" href="./About.html">About</a></li>
-        </ul>
-        <a href="logout.html" class="btn btn-gradient ms-3">Logout</a>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Page Content -->
-  <div class="container">
-    <h2 class="page-title">My Subscriptions</h2>
-    <div class="row g-4">
-<div class="container my-4 text-end">
-  <a href="add-subscription.html" class="btn btn-gradient">
-    <i class="fa fa-plus"></i> Add Subscription
-  </a>
+<nav class="navbar navbar-expand-lg">
+<div class="container">
+  <a class="navbar-brand" href="#">SubTrack</a>
+  <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item"><a class="nav-link" href="./DashBoard.html">Home</a></li>
+      <li class="nav-item"><a class="nav-link" href="./Plans.html">Event List</a></li>          
+      <li class="nav-item"><a class="nav-link" href="./Contact.html">Contact</a></li>
+      <li class="nav-item"><a class="nav-link" href="./About.html">About</a></li>
+    </ul>
+    <a href="logout.html" class="btn btn-gradient ms-3">Log Out</a>
+  </div>
 </div>
-      <!-- Subscription Card Example -->
-      <div class="col-md-4">
-        <div class="subscription-card">
-         
-          <h5>Netflix</h5>
-          <p>₹499 / month</p>
-          <p>Status: Active</p>
-          <button class="btn btn-gradient">Manage</button>
-        </div>
+</nav>
+
+<div class="container my-5">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>My Subscriptions</h2>
+    <button id="addSubBtn" class="btn btn-gradient"><i class="fa fa-plus"></i> Add Subscription</button>
+  </div>
+  <h5 id="monthlyExpense">Monthly Expense: ₹0</h5>
+  <div id="subscriptionList" class="row mt-4"></div>
+</div>
+
+<div class="modal fade" id="subModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content text-dark">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalTitle">Add Subscription</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-
-      <div class="col-md-4">
-        <div class="subscription-card">
-         
-          <h5>Spotify</h5>
-          <p>₹199 / month</p>
-          <p>Status: Expiring Soon</p>
-          <button class="btn btn-gradient">Renew</button>
-        </div>
+      <div class="modal-body">
+        <form id="subForm">
+          <input type="hidden" id="subId">
+          <div class="mb-3">
+            <label>Name</label>
+            <input type="text" id="subName" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label>Price (₹)</label>
+            <input type="number" id="subPrice" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label>Expiry Date</label>
+            <input type="date" id="subExpiry" class="form-control" required>
+          </div>
+          <button type="submit" class="btn btn-gradient w-100">Save</button>
+        </form>
       </div>
-
-      <div class="col-md-4">
-        <div class="subscription-card">
-         
-          <h5>Amazon Prime</h5>
-          <p>₹499 / year</p>
-          <p>Status: Active</p>
-          <button class="btn btn-gradient">Manage</button>
-        </div>
-      </div>
-
-      <!-- Add more cards similarly -->
-
     </div>
   </div>
+</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+let subscriptions = [];
+const subscriptionList = document.getElementById('subscriptionList');
+const monthlyExpenseEl = document.getElementById('monthlyExpense');
+const subModal = new bootstrap.Modal(document.getElementById('subModal'));
+const user = JSON.parse(localStorage.getItem('user'));
+if(!user) window.location.href = 'Login.html';
+const userEmail = user.email;
+
+// Fetch subscriptions
+async function fetchSubscriptions(){
+    try {
+        const res = await fetch(`http://localhost:3000/api/subscriptions?email=${encodeURIComponent(userEmail)}`);
+        subscriptions = await res.json();
+        renderSubscriptions();
+        updateMonthlyExpense();
+    } catch(err){ console.error(err); }
+}
+
+// Render subscription cards
+function renderSubscriptions() {
+    subscriptionList.innerHTML = '';
+    if(subscriptions.length===0){
+        subscriptionList.innerHTML = `<p>No subscriptions yet. Click "Add Subscription" to get started.</p>`;
+        return;
+    }
+
+    subscriptions.forEach(sub => {
+        const col = document.createElement('div');
+        col.classList.add('col-md-4');
+
+        const today = new Date();
+        const expiry = new Date(sub.expiryDate);
+        const isExpired = expiry < today;
+        const currentStatus = sub.status || 'Active';
+
+        let status, statusClass;
+        if(currentStatus==='Paused'){ status='Paused'; statusClass='status-paused'; }
+        else if(isExpired){ status='Expired'; statusClass='status-expired'; }
+        else { status='Active'; statusClass='status-active'; }
+
+        let actionButtons = '';
+        if(status==='Active'){
+            actionButtons = `
+            <div class="dropdown d-inline-block">
+              <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                  <i class="fa fa-cogs"></i> Manage
+              </button>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); editSubscription(${sub.id})"><i class="fa fa-edit"></i> Edit</a></li>
+                <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); pauseSubscription(${sub.id})"><i class="fa fa-pause"></i> Pause</a></li>
+                <li><hr class="dropdown-divider bg-secondary"></li>
+                <li><a class="dropdown-item text-danger" href="#" onclick="event.preventDefault(); deleteSubscription(${sub.id})"><i class="fa fa-trash"></i> Delete</a></li>
+              </ul>
+            </div>`;
+        } else if(status==='Paused'){
+            actionButtons = `
+            <div class="dropdown d-inline-block">
+              <button class="btn btn-warning btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                  <i class="fa fa-hand-paper"></i> Paused
+              </button>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item text-success" href="#" onclick="event.preventDefault(); resumeSubscription(${sub.id})"><i class="fa fa-play"></i> Resume</a></li>
+                <li><hr class="dropdown-divider bg-secondary"></li>
+                <li><a class="dropdown-item text-danger" href="#" onclick="event.preventDefault(); deleteSubscription(${sub.id})"><i class="fa fa-trash"></i> Delete</a></li>
+              </ul>
+            </div>`;
+        } else if(status==='Expired'){
+            actionButtons = `<button class="btn btn-success btn-sm" onclick="renewSubscription(${sub.id})"><i class="fa fa-refresh"></i> Renew</button>`;
+        }
+
+        col.innerHTML = `
+    <div class="card-sub">
+        <div class="status-badge ${statusClass}">${status}</div>
+        ${status==='Paused'?'<div class="user-paused">Paused by You</div>':''}
+        <h5>${sub.name}</h5>
+        <p>Price: ₹${sub.price}</p>
+        <p>Expiry: ${expiry.toLocaleDateString()}</p>
+        ${actionButtons}
+    </div>
+`;
+        subscriptionList.appendChild(col);
+    });
+}
+
+function updateMonthlyExpense(){
+    const total = subscriptions.reduce((acc, sub) => acc+parseFloat(sub.price), 0);
+    monthlyExpenseEl.textContent = `Monthly Expense: ₹${total}`;
+}
+
+// Add/Edit/Renew modal
+document.getElementById('addSubBtn').addEventListener('click', ()=>{
+    document.getElementById('modalTitle').textContent='Add Subscription';
+    document.getElementById('subForm').reset();
+    document.getElementById('subId').value='';
+    subModal.show();
+});
+
+document.getElementById('subForm').addEventListener('submit', async e=>{
+    e.preventDefault();
+    const id = document.getElementById('subId').value;
+    const name = document.getElementById('subName').value;
+    const price = document.getElementById('subPrice').value;
+    const expiryDate = document.getElementById('subExpiry').value;
+
+    try{
+        if(id){ 
+            await fetch(`http://localhost:3000/subscriptions/${id}`, {
+                method:'PUT', headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({name,price,expiryDate})
+            });
+        } else { 
+            await fetch(`http://localhost:3000/subscriptions`, {
+                method:'POST', headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({userEmail,name,price,expiryDate})
+            });
+        }
+        subModal.hide();
+        fetchSubscriptions();
+    } catch(err){ console.error(err); }
+});
+
+function editSubscription(id){
+    const sub = subscriptions.find(s=>s.id===id);
+    if(!sub) return;
+    document.getElementById('modalTitle').textContent='Edit Subscription';
+    document.getElementById('subId').value=sub.id;
+    document.getElementById('subName').value=sub.name;
+    document.getElementById('subPrice').value=sub.price;
+    document.getElementById('subExpiry').value=sub.expiryDate.split('T')[0];
+    subModal.show();
+}
+
+function renewSubscription(id){
+    editSubscription(id);
+}
+
+async function deleteSubscription(id){
+    if(!confirm('Are you sure you want to delete this subscription?')) return;
+    try{
+        await fetch(`http://localhost:3000/subscriptions/${id}`, {method:'DELETE'});
+        fetchSubscriptions();
+    } catch(err){ console.error(err); }
+}
+
+async function pauseSubscription(id){
+    try{
+        await fetch(`http://localhost:3000/subscriptions/${id}`, {
+            method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify({status:'Paused'})
+        });
+        fetchSubscriptions();
+    } catch(err){ console.error(err); }
+}
+
+async function resumeSubscription(id){
+    try{
+        await fetch(`http://localhost:3000/subscriptions/${id}`, {
+            method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify({status:'Active'})
+        });
+        fetchSubscriptions();
+    } catch(err){ console.error(err); }
+}
+
+// Initial load
+fetchSubscriptions();
+</script>
 </body>
 </html>
