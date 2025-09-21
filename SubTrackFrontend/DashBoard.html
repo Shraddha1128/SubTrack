@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SubTrack - User Dashboard</title>
+<title>SubTrack - Dashboard</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
@@ -16,12 +16,19 @@ body {
     color: #fff;
     font-family: 'Segoe UI', sans-serif;
 }
+
 .navbar { background-color: rgba(0, 0, 0, 0.6); }
 .navbar-brand { font-weight: bold; font-size: 1.5rem; color: #fff !important; }
 .nav-link { color: #ddd !important; margin-right: 15px; }
 .nav-link:hover { color: #fff !important; }
-.btn-gradient { background: linear-gradient(to right, #270D7D, #281A84, #2C4FA0, #2D5CA7); color:#fff; border:none; padding:8px 18px; border-radius:8px; font-weight:bold; }
-.btn-gradient:hover { background: linear-gradient(to right, #2D5CA7, #2C4FA0, #281A84, #270D7D); }
+
+.btn-gradient { 
+    background: linear-gradient(to right, #270D7D, #281A84, #2C4FA0, #2D5CA7); 
+    color:#fff; border:none; padding:8px 18px; border-radius:8px; font-weight:bold; 
+}
+.btn-gradient:hover { 
+    background: linear-gradient(to right, #2D5CA7, #2C4FA0, #281A84, #270D7D); 
+}
 
 .dashboard { padding: 50px 30px; }
 @media (max-width: 767.98px){ .dashboard { padding: 20px 15px; } }
@@ -57,6 +64,21 @@ body {
 footer{ background-color: rgba(0,0,0,0.85); color:#fff; padding:40px 20px; }
 footer h5{ font-weight:bold; margin-bottom:15px; }
 footer a:hover{ text-decoration:underline; }
+#reminderCount {
+    display: inline-block; /* ❗ important for transform animation */
+    transition: transform 0.3s ease-in-out;
+}
+
+#reminderCount.animate {
+    animation: bounce 0.5s ease-in-out;
+}
+
+@keyframes bounce {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.5); }
+    100% { transform: scale(1); }
+}
+
 </style>
 </head>
 <body>
@@ -73,8 +95,8 @@ footer a:hover{ text-decoration:underline; }
         <ul class="navbar-nav">
             <li class="nav-item"><a class="nav-link" href="./Homepage1.html">Home</a></li>
             <li class="nav-item"><a class="nav-link" href="./Plans.html">Plans</a></li>
-            <li class="nav-item"><a class="nav-link" href="./Contact.html">Contact</a></li>
-            <li class="nav-item"><a class="nav-link" href="./About.html">About</a></li>
+            <li class="nav-item"><a class="nav-link" href="./Contact1.html">Contact</a></li>
+            <li class="nav-item"><a class="nav-link" href="./About1.html">About</a></li>
         </ul>
         <a href="logout.html" class="btn btn-gradient ms-3">Logout</a>
     </div>
@@ -85,12 +107,15 @@ footer a:hover{ text-decoration:underline; }
 <div class="row">
 
 <div class="col-lg-2 sidebar" id="sidebar">
-<h4>Menu</h4>
+<h4 style="text-align: center;">Menu</h4>
 <nav class="nav flex-column">
     <a class="nav-link active" href="./DashBoard.html"><i class="fa fa-home"></i> Dashboard</a>
     <a class="nav-link" href="./MySubScription.html"><i class="fa fa-list"></i> My Subscriptions</a>
-    <a class="nav-link" href="#"><i class="fa fa-bell"></i> Reminders</a>
-    <a class="nav-link" href="#"><i class="fa fa-wallet"></i> Billing</a>
+    <a class="nav-link" href="./Reminders.html">
+    <i class="fa fa-bell"></i> Reminders 
+    <span id="reminderCount" class="badge bg-warning text-dark ms-1">0</span>
+</a>
+
     <a class="nav-link" href="Profile.html"><i class="fa fa-user"></i> Profile</a>
 </nav>
 </div>
@@ -177,7 +202,23 @@ if(user){
     window.location.href = 'Login.html';
 }
 
-// Fetch subscriptions dynamically from backend
+// Function to animate reminder badge
+function updateReminderBadge(count) {
+    const badge = document.getElementById('reminderCount');
+    badge.textContent = count;
+
+    // Remove if already has class to retrigger
+    badge.classList.remove('animate');
+
+    // Force reflow to restart animation
+    void badge.offsetWidth;
+
+    badge.classList.add('animate');
+
+    setTimeout(() => badge.classList.remove('animate'), 500); // match animation duration
+}
+
+// Fetch subscriptions and update dashboard
 async function updateDashboard() {
     try {
         const res = await fetch(`http://localhost:3000/api/subscriptions?email=${user.email}`);
@@ -205,8 +246,11 @@ async function updateDashboard() {
         document.getElementById('upcomingRenewals').textContent = `${upcomingCount} This Week`;
         document.getElementById('monthlySpending').textContent = `₹${totalSpending.toLocaleString()}`;
 
-        // Recent Activity - फक्त 3 दाखवायचे
-        let recentSubs = subs.slice(-3).reverse(); // शेवटचे 3 उलट क्रमाने
+        // Animate reminder badge
+        updateReminderBadge(upcomingCount);
+
+        // Recent Activity - last 3
+        let recentSubs = subs.slice(-3).reverse();
         recentSubs.forEach(sub => {
             const div = document.createElement('div');
             div.classList.add('activity-item');
