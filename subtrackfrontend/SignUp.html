@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signup - Subscriptions</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Inline CSS -->
+  <style>
+    body {
+      background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('images/background.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      min-height: 100vh;
+      color: #fff;
+    }
+    .card {
+      background-color: rgba(255,255,255,0.95);
+      border-radius: 12px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+    }
+    .btn-gradient {
+      background: linear-gradient(to right, #270D7D, #281A84, #2C4FA0, #2D5CA7);
+      color: #fff;
+      border: none;
+      padding: 12px;
+      font-size: 1rem;
+      border-radius: 8px;
+    }
+    .btn-gradient:hover {
+      background: linear-gradient(to right, #2D5CA7, #2C4FA0, #281A84, #270D7D);
+      color: #fff;
+    }
+    .tagline {
+      font-size: 0.9rem;
+      color: #555;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    .input-group-text {
+      background: #f1f1f1;
+      border: none;
+    }
+    .form-control {
+      border-left: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container"  style="padding: 10px;">
+  <div class="row justify-content-center align-items-center vh-100">
+    <div class="col-md-6 col-lg-4">
+      <div class="card shadow">
+        <div class="card-body p-4">
+          <h2 class="text-center mb-2 fw-bold" style="color: #270D7D;">Create Your Account</h2>
+          <p class="tagline">Join now and manage all your subscriptions in one place.</p>
+          <h5 class="text-center mb-4" style="color: #270D7D;">Sign Up</h5>
+          
+          <form>
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fa fa-user"></i></span>
+              <input type="text" class="form-control" id="name" placeholder="Enter your Full Name" required>
+            </div>
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fa fa-phone"></i></span>
+              <input type="text" class="form-control" id="phnumber" placeholder="Enter your Phone Number" required>
+            </div>
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+              <input type="email" class="form-control" id="email" placeholder="Enter Email" required>
+            </div>
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fa fa-lock"></i></span>
+              <input type="password" class="form-control" id="password" placeholder="Enter Password" required>
+            </div>
+            <div class="mb-3 input-group">
+              <span class="input-group-text"><i class="fa fa-check-circle"></i></span>
+              <input type="password" class="form-control" id="confirmpassword" placeholder="Confirm Password" required>
+            </div>
+           <button type="submit" id="signupBtn" class="btn btn-gradient w-100">Sign Up</button>
+
+          </form>
+          
+          <p class="text-center mt-3">Already have an account? <a href="login.html">Login</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+<script>
+document.getElementById('signupBtn').addEventListener('click', async (e) => {
+    e.preventDefault(); // prevent form from submitting normally
+
+    const name = document.getElementById('name').value
+    const email = document.getElementById('email').value
+    const phnumber = document.getElementById('phnumber').value
+    const password = document.getElementById('password').value
+    const confirmPassword = document.getElementById('confirmpassword').value
+
+    try {
+        const res = await fetch('http://localhost:3000/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, password, confirmPassword, phnumber })
+
+        })
+
+        const data = await res.json()
+        alert(data.message)
+
+        if(data.message === 'User registered successfully'){
+            window.location.href = 'login.html' // redirect to login
+        }
+    } catch (err) {
+        alert('Error: ' + err.message)
+    }
+})
+</script>
+
+</html>

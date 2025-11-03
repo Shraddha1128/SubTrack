@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SubTrack - Profile</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), url('images/background.jpg');
+      background-size: cover;
+      background-position: center;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      min-height: 100vh;
+    }
+
+    .navbar {
+      background-color: rgba(0, 0, 0, 0.6);
+    }
+    .navbar-brand { font-weight: bold; font-size: 1.5rem; color: #fff !important; }
+    .nav-link { color: #ddd !important; margin-right: 15px; }
+    .nav-link:hover { color: #fff !important; }
+    .nav-link.active { color: #fff !important; font-weight: bold; }
+
+    .btn-gradient {
+      background: linear-gradient(to right, #270D7D, #281A84, #2C4FA0, #2D5CA7);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 18px;
+      font-weight: bold;
+      transition: 0.3s ease;
+    }
+    .btn-gradient:hover {
+      background: linear-gradient(to right, #2D5CA7, #2C4FA0, #281A84, #270D7D);
+    }
+
+    .profile-card {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 30px;
+      max-width: 900px;
+      margin: 50px auto;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+
+    .profile-header img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 3px solid #2D5CA7;
+      object-fit: cover;
+    }
+
+    .profile-header h2 {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .profile-header p {
+      color: #ccc;
+      margin: 2px 0;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      margin: 20px 0;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 15px 20px;
+      border-radius: 10px;
+      text-align: center;
+      flex: 1;
+      margin: 0 10px;
+    }
+
+    .stat-card h4 {
+      color: #2D5CA7;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .stat-card p {
+      color: #ccc;
+      font-size: 0.9rem;
+    }
+
+    @media(max-width:768px){
+      .profile-header{
+        flex-direction: column;
+        text-align: center;
+      }
+      .stats{
+        flex-direction: column;
+        gap: 15px;
+      }
+      .stat-card{
+        margin: 0;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+      <a class="navbar-brand" href="#">SubTrack</a>
+      <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="./DashBoard.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="./Plans1.html">Plans</a></li>
+          <li class="nav-item"><a class="nav-link" href="./Contact1.html">Contact</a></li>
+          <li class="nav-item"><a class="nav-link active" href="./Profile.html">Profile</a></li>
+        </ul>
+        <a href="logout.html" class="btn btn-gradient ms-3">Logout</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Profile Card -->
+  <div class="profile-card">
+
+    <!-- Profile Header -->
+    <div class="profile-header">
+      <div class="text-center">
+        <img id="profileImg" src="images/profile.png" alt="Profile Picture">
+        <div class="mt-2">
+          <input type="file" id="profilePhotoInput" accept="image/*" style="display:none">
+          <button class="btn btn-gradient btn-sm" onclick="document.getElementById('profilePhotoInput').click()">
+            <i class="fa fa-camera"></i> Change Photo
+          </button>
+        </div>
+      </div>
+
+      <div class="ms-3">
+        <h2 id="username"></h2>
+        <p id="useremail"><i class="fa fa-envelope"></i></p>
+        <p id="phnumber"><i class="fa fa-phone"></i> +91 </p>
+        
+        <a href="edit-profile.html" class="btn btn-gradient mt-2"><i class="fa fa-edit"></i> Edit Profile</a>
+        <a href="change-password.html" class="btn btn-gradient mt-2"><i class="fa fa-lock"></i> Change Password</a>
+      </div>
+    </div>
+
+    <!-- Subscription Stats -->
+   
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+  // Get user from localStorage
+  const user = JSON.parse(localStorage.getItem('user'))
+  const profileImg = document.getElementById('profileImg')
+  const profileInput = document.getElementById('profilePhotoInput')
+
+  if (user) {
+    document.getElementById('username').textContent = user.name
+    document.getElementById('useremail').textContent = user.email
+    document.getElementById('phnumber').textContent = `+91 ${user.phnumber}`
+
+    if (user.profile_pic) {
+      profileImg.src = user.profile_pic
+    }
+  } else {
+    window.location.href = 'Login.html'
+  }
+
+  // Handle photo upload (Base64 approach)
+  profileInput.addEventListener('change', function () {
+    const file = this.files[0]
+    if (!file) return
+
+    const reader = new FileReader()
+    reader.onload = async function () {
+      const base64String = reader.result // includes "data:image/png;base64,..."
+
+      try {
+        const res = await fetch("http://localhost:3000/api/update-profile-pic", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: user.id,
+            profile_pic_base64: base64String
+          })
+        })
+        const data = await res.json()
+        if (data.success) {
+          profileImg.src = data.user.profile_pic
+          localStorage.setItem("user", JSON.stringify(data.user))
+          alert("Profile picture updated!")
+        } else {
+          alert("Error: " + data.error)
+        }
+      } catch (err) {
+        alert("Upload failed: " + err.message)
+      }
+    }
+    reader.readAsDataURL(file)
+  })
+</script>
+
+
+</body>
+</html>

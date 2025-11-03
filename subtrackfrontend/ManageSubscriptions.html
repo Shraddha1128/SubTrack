@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SubTrack - Manage Plans</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+body {
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('images/background.jpg') no-repeat center center fixed;
+    background-size: cover;
+    min-height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+    color: #fff;
+}
+
+.navbar {
+    background: rgba(0,0,0,0.6);
+    padding: 0 20px;
+    height: 50px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.6rem;
+    line-height: 50px;
+    color: #fff !important;
+}
+
+.nav-link {
+    color: #ddd !important;
+    margin-right: 15px;
+    font-size: 1rem;
+    line-height: 50px;
+    transition: color 0.3s;
+}
+.nav-link:hover { color: #ffcc00 !important; }
+
+.btn-gradient {
+    background: linear-gradient(90deg, #6a11cb, #2575fc);
+    color: #fff;
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 10px 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+}
+.btn-gradient:hover {
+    background: linear-gradient(90deg, #2575fc, #6a11cb);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+}
+
+.container {
+    padding: 60px 30px;
+}
+
+/* Card Design */
+#planList .card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-radius: 20px;
+    padding: 25px;
+    margin: 20px 0;
+    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+    transition: all 0.3s ease;
+    color: #fff;
+}
+
+#planList .card:hover {
+    transform: translateY(-10px) scale(1.03);
+    box-shadow: 0 25px 50px rgba(0,0,0,0.7);
+    border-color: rgba(255,255,255,0.3);
+}
+
+.card-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 10px; }
+.card-text { font-size: 0.95rem; margin-bottom: 8px; }
+
+/* Modal Styling */
+.modal-content { background: rgba(30,30,30,0.85); color: #fff; border-radius: 15px; border: none; backdrop-filter: blur(15px); }
+.modal-header { border-bottom: none; }
+.modal-footer { border-top: none; }
+
+.form-control {
+    background: rgba(255,255,255,0.15);
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+}
+.form-control::placeholder { color: #ddd; }
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="#">SubTrack</a>
+    <div class="collapse navbar-collapse justify-content-end">
+      <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link" href="./AdminDashboard.html">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="./Plans1.html">Plans</a></li>
+            <li class="nav-item"><a class="nav-link" href="./Contact1.html">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <h2 class="mb-4">Manage Plans</h2>
+  <button type="button" class="btn btn-gradient mb-3" onclick="openAddModal()">Add Plan</button>
+
+  <!-- Cards container -->
+  <div id="planList" class="row g-4"></div>
+</div>
+
+<!-- Add/Edit Modal -->
+<div class="modal fade" id="planModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content text-dark">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalTitle">Add Plan</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="planId">
+        <input type="text" id="planName" class="form-control mb-2" placeholder="Plan Name">
+        <input type="number" id="planPrice" class="form-control mb-2" placeholder="Price">
+        <input type="date" id="planStart" class="form-control mb-2">
+        <input type="date" id="planExpiry" class="form-control mb-2">
+        <textarea id="planDescription" class="form-control mb-2" placeholder="Description"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-gradient" onclick="savePlan()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const planModal = new bootstrap.Modal(document.getElementById('planModal'));
+
+// Fetch all plans and render
+async function fetchPlans() {
+    try {
+        const res = await fetch('http://localhost:3000/api/plans');
+        if(!res.ok) throw new Error('Failed to fetch plans');
+        const plans = await res.json();
+        const container = document.getElementById('planList');
+        container.innerHTML = '';
+
+        plans.forEach(plan => {
+            const col = document.createElement('div');
+            col.className = 'col-md-4';
+            col.innerHTML = `
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">${plan.name}</h5>
+                        <p class="card-text"><strong>Price:</strong> ₹${plan.price}</p>
+                        <p class="card-text"><strong>Start:</strong> ${plan.startDate.split('T')[0]}</p>
+                        <p class="card-text"><strong>Expiry:</strong> ${plan.expiryDate.split('T')[0]}</p>
+                        <p class="card-text">${plan.description || ''}</p>
+                        <div class="d-flex justify-content-between mt-3">
+                            <button class="btn btn-sm btn-gradient" onclick="editPlan(${plan.Id})">Edit</button>
+                            <button class="btn btn-sm btn-danger" onclick="deletePlan(${plan.Id})">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(col);
+        });
+    } catch(err) {
+        console.error(err);
+        alert('Error fetching plans');
+    }
+}
+
+// Open modal for adding
+function openAddModal() {
+    document.getElementById('modalTitle').textContent = 'Add Plan';
+    document.getElementById('planId').value = '';
+    document.getElementById('planName').value = '';
+    document.getElementById('planPrice').value = '';
+    document.getElementById('planStart').value = '';
+    document.getElementById('planExpiry').value = '';
+    document.getElementById('planDescription').value = '';
+    planModal.show();
+}
+
+// Save plan (Add/Edit)
+async function savePlan() {
+    const id = document.getElementById('planId').value;
+    const name = document.getElementById('planName').value;
+    const price = document.getElementById('planPrice').value;
+    const startDate = document.getElementById('planStart').value;
+    const expiryDate = document.getElementById('planExpiry').value;
+    const description = document.getElementById('planDescription').value;
+
+    if(!name || !price || !startDate || !expiryDate) return alert("All fields required");
+
+    const payload = { name, price, startDate, expiryDate, description };
+
+    try {
+        if(id) {
+            await fetch(`http://localhost:3000/api/plans/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+        } else {
+            await fetch('http://localhost:3000/api/plans', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+        }
+        planModal.hide();
+        fetchPlans();
+    } catch(err) {
+        console.error(err);
+        alert('Error saving plan');
+    }
+}
+
+// Edit plan
+async function editPlan(id) {
+    try {
+        const res = await fetch(`http://localhost:3000/api/plans/${id}`);
+        if(!res.ok) throw new Error('Plan not found');
+        const plan = await res.json();
+
+        document.getElementById('modalTitle').textContent = 'Edit Plan';
+        document.getElementById('planId').value = plan.Id;
+        document.getElementById('planName').value = plan.name;
+        document.getElementById('planPrice').value = plan.price;
+        document.getElementById('planStart').value = plan.startDate.split('T')[0];
+        document.getElementById('planExpiry').value = plan.expiryDate.split('T')[0];
+        document.getElementById('planDescription').value = plan.description || '';
+        planModal.show();
+    } catch(err) {
+        console.error(err);
+        alert('Error editing plan');
+    }
+}
+
+// Delete plan
+async function deletePlan(id) {
+    if(confirm("Are you sure to delete?")) {
+        try {
+            await fetch(`http://localhost:3000/api/plans/${id}`, { method: 'DELETE' });
+            fetchPlans();
+        } catch(err) {
+            console.error(err);
+            alert('Error deleting plan');
+        }
+    }
+}
+
+// Load on page load
+fetchPlans();
+</script>
+</body>
+</html>

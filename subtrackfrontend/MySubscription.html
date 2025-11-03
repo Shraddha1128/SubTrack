@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SubTrack - My Subscriptions</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+body {
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('images/background.jpg');
+    background-size: cover;
+    background-position: center;
+    color: #fff;
+    font-family: 'Segoe UI', sans-serif;
+    min-height: 100vh;
+}
+.navbar { background-color: rgba(0,0,0,0.6); }
+.navbar-brand { font-weight: bold; color: #fff !important; }
+.nav-link { color: #ddd !important; margin-right: 15px; }
+.nav-link:hover { color: #fff !important; }
+.btn-gradient {
+    background: linear-gradient(to right, #270D7D, #2D5CA7);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+}
+.btn-gradient:hover {
+    background: linear-gradient(to right, #2D5CA7, #270D7D);
+}
+.card-sub {
+    position: relative;
+    background: rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    color: #fff;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card-sub:hover {
+    transform: scale(1.03);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+.status-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 5px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #fff;
+}
+.status-active { background-color: #28a745; }
+.status-renewed { background-color: #17a2b8; }
+.status-paused { background-color: #ffc107; color: #000; }
+.user-paused {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+.dropdown-menu {
+    background-color: #1e1e2f;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.dropdown-item { color: #fff; }
+.dropdown-item:hover { background-color: #3f3f5a; color: #fff; }
+</style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg">
+<div class="container">
+  <a class="navbar-brand" href="#">SubTrack</a>
+  <div class="collapse navbar-collapse justify-content-end">
+    <ul class="navbar-nav">
+      <li class="nav-item"><a class="nav-link" href="./DashBoard.html">Home</a></li>
+      <li class="nav-item"><a class="nav-link" href="./Plans1.html">Plans</a></li>          
+      <li class="nav-item"><a class="nav-link" href="./Contact1.html">Contact</a></li>
+      <li class="nav-item"><a class="nav-link" href="./About1.html">About</a></li>
+    </ul>
+    <a href="logout.html" class="btn btn-gradient ms-3">Log Out</a>
+  </div>
+</div>
+</nav>
+
+<div class="container my-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2>My Subscriptions</h2>
+      <h5 id="monthlyExpense">Monthly Expense: ₹0</h5>
+    </div>
+    <button class="btn btn-gradient" onclick="window.location.href='AddSubscription.html'">
+      <i class="fa fa-plus"></i> Add Subscription
+    </button>
+  </div>
+
+  <div id="subscriptionList" class="row mt-3"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const user = JSON.parse(localStorage.getItem('user'));
+if(!user) window.location.href = 'Login.html';
+const userEmail = user.email;
+
+let subscriptions = [];
+
+async function fetchSubscriptions(){
+    try{
+        const res = await fetch(`http://localhost:3000/api/subscriptions?email=${encodeURIComponent(userEmail)}`);
+        subscriptions = await res.json();
+        const today = new Date();
+
+        // Auto-update expired subscriptions in DB
+        for (let sub of subscriptions) {
+            const planExpiry = new Date(sub.expiryDate);
+            if(sub.activity === 'Active' && planExpiry < today){
+                await updateActivity(sub.id, 'Renewed'); // update DB
+                sub.activity = 'Renewed'; // update locally
+            }
+        }
+
+        renderSubscriptions();
+        updateMonthlyExpense();
+    }catch(err){ console.error(err); }
+}
+
+function renderSubscriptions(){
+    const subscriptionList = document.getElementById('subscriptionList');
+    subscriptionList.innerHTML = '';
+
+    if(subscriptions.length === 0){
+        subscriptionList.innerHTML = `<p>No subscriptions yet.</p>`;
+        return;
+    }
+
+    const today = new Date();
+
+    subscriptions.forEach(sub => {
+        const col = document.createElement('div');
+        col.classList.add('col-md-4');
+
+        const planStart = new Date(sub.startDate);
+        const planExpiry = new Date(sub.expiryDate);
+
+        // Status badge
+        let status = 'Active';
+        let statusClass = 'status-active';
+        if(sub.activity === 'Paused'){ status='Paused'; statusClass='status-paused'; }
+        else if(sub.activity === 'Renewed'){ status='Renewed'; statusClass='status-renewed'; }
+
+        // Action buttons
+        let actionButtons = '';
+        if(status==='Active'){
+            actionButtons = `
+            <div class="dropdown">
+              <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                  Manage
+              </button>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#" onclick="updateActivity(${sub.id}, 'Paused')">Pause Subscription</a></li>
+                <li><a class="dropdown-item" href="#" onclick="renewSubscription(${sub.id}, '${sub.name}', ${sub.price})">Renew Subscription</a></li>
+              </ul>
+            </div>`;
+        } else if(status==='Paused'){
+            actionButtons = `<button class="btn btn-warning btn-sm" onclick="updateActivity(${sub.id}, 'Active')">Resume Subscription</button>`;
+        } else if(status==='Renewed'){
+            actionButtons = `<button class="btn btn-success btn-sm" onclick="renewSubscription(${sub.id}, '${sub.name}', ${sub.price})">Renew Subscription</button>`;
+        }
+
+        col.innerHTML = `
+        <div class="card-sub">
+            <div class="status-badge ${statusClass}">${status}</div>
+            ${status==='Paused'?'<div class="user-paused">Paused by You</div>':''}
+            <h5>${sub.name}</h5>
+            <p>Price: ₹${sub.price}</p>
+            <p>Start: ${planStart.toLocaleDateString()}</p>
+            <p>Expiry: ${planExpiry.toLocaleDateString()}</p>
+            ${actionButtons}
+        </div>`;
+        subscriptionList.appendChild(col);
+    });
+}
+
+function updateMonthlyExpense(){
+    const today = new Date();
+    const total = subscriptions
+        .filter(sub => new Date(sub.expiryDate) >= today)
+        .reduce((acc, sub) => acc + parseFloat(sub.price), 0);
+    document.getElementById('monthlyExpense').textContent = `Monthly Expense: ₹${total}`;
+}
+
+async function updateActivity(id, newActivity){
+    try{
+        const res = await fetch(`http://localhost:3000/api/subscriptions/${id}`, {
+            method:'PUT',
+            headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({activity:newActivity})
+        });
+        const data = await res.json();
+        if(data.success){
+            fetchSubscriptions();
+        } else {
+            alert('Failed to update subscription.');
+        }
+    }catch(err){ console.error(err); }
+}
+
+function renewSubscription(id, name, price){
+    localStorage.setItem('renewPlan', JSON.stringify({ id, name, price }));
+    alert('Redirecting to renewal page...');
+    window.location.href = 'AddSubscription.html';
+}
+
+// Initial load
+fetchSubscriptions();
+</script>
+</body>
+</html>
