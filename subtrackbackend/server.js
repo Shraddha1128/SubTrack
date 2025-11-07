@@ -1,111 +1,233 @@
-const express = require('express')
-const mysql = require('mysql2')
-const bcrypt = require('bcrypt')
-const bodyParser = require('body-parser')
-const cors = require("cors")
-const path = require("path")
-const fs = require("fs")
+// const express = require('express')
+// const mysql = require('mysql2')
+// const bcrypt = require('bcrypt')
+// const bodyParser = require('body-parser')
+// const cors = require("cors")
+// const path = require("path")
+// const fs = require("fs")
 
-const app = express()
-app.use(cors())
-app.use(express.json())
-app.use(bodyParser.json())
-app.use("/images", express.static(path.join(__dirname, "public/images")))
+// const app = express()
+// app.use(cors())
+// app.use(express.json())
+// app.use(bodyParser.json())
+// app.use("/images", express.static(path.join(__dirname, "public/images")))
 
-// MySQL connection
+// // MySQL connection
+// const db = mysql.createConnection({
+//     host: 'localhost',
+//     user: 'root',
+//     password: '', 
+//     database: 'subtrack1'
+// })
+
+// db.connect(err => {
+//     if(err) throw err
+//     console.log('MySQL Connected')
+// })
+
+// // ===================== SIGNUP =====================
+// app.post('/signup', async (req, res) => {
+//     const { name, email, password, confirmPassword, phnumber } = req.body
+
+//     if(!name || !email || !password || !confirmPassword || !phnumber) {
+//         return res.status(400).send({ message: "All fields are required" })
+//     }
+
+//     if(password !== confirmPassword) {
+//         return res.status(400).send({ message: "Passwords do not match" })
+//     }
+
+//     try {
+//         const hashedPassword = await bcrypt.hash(password, 10)
+//         const profilePic = 'profile.png'
+
+//         const sql = 'INSERT INTO users (name, phnumber, email, password, profile_pic, role) VALUES (?, ?, ?, ?, ?, ?)'
+// db.query(sql, [name, phnumber, email, hashedPassword, profilePic, 'user'], (err, result) => {
+//             if(err){
+//                 console.error("Database Error:", err)
+//                 return res.status(500).send({ error: err.sqlMessage })
+//             }
+//             res.send({ message: 'User registered successfully' })
+//         })
+//     } catch (err) {
+//         console.error("Server Error:", err)
+//         res.status(500).send({ error: 'Something went wrong' })
+//     }
+// })
+
+// // ===================== LOGIN =====================
+// app.post('/login', async (req, res) => {
+//     const { email, password } = req.body
+
+//     if (!email || !password) {
+//         return res.status(400).json({ message: "Email and password are required" })
+//     }
+
+//     const adminEmail = "admin@gmail.com"
+// const adminPassword = "admin123"
+
+// if (email === adminEmail && password === adminPassword) {
+//     return res.json({
+//         message: "Admin login successful",
+//         user: {
+//             id: 0,
+//             name: "Admin",
+//             email: adminEmail,
+//             phnumber: "N/A",
+//             profile_pic: "http://localhost:3000/images/admin.jpeg",
+//             role: "admin"
+//         }
+//     })
+
+//     }
+
+//     // ✅ If not admin, continue with user login from DB
+//     const sql = 'SELECT * FROM users WHERE email = ?'
+//     db.query(sql, [email], async (err, results) => {
+//         if (err) return res.status(500).json({ error: err.sqlMessage })
+//         if (results.length === 0) return res.status(400).json({ message: 'User not found' })
+
+//         const user = results[0]
+//         const match = await bcrypt.compare(password, user.password)
+//         if (!match) return res.status(400).json({ message: 'Incorrect password' })
+
+//         res.json({
+//             message: 'Login successful',
+//             user: {
+//                 id: user.id,
+//                 name: user.name,
+//                 email: user.email,
+//                 phnumber: user.phnumber,
+//                 profile_pic: `http://localhost:3000/images/${user.profile_pic}`,
+//                 created_at: user.created_at,
+//                 role: "user"
+//             }
+//         })
+//     })
+// })
+
+import express from "express";
+import mysql from "mysql2";
+import bcrypt from "bcrypt";
+import cors from "cors";
+import dotenv from "dotenv";
+import bodyParser from "body-parser";
+import path from "path";
+import fs from "fs";
+import { fileURLToPath } from "url";
+
+dotenv.config();
+
+// ====================== APP SETUP ======================
+const app = express();
+app.use(cors());
+app.use(express.json());
+app.use(bodyParser.json());
+
+// Static images folder
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+app.use("/images", express.static(path.join(__dirname, "public/images")));
+
+// ====================== MYSQL CONNECTION ======================
 const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '', 
-    database: 'subtrack'
-})
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+});
 
-db.connect(err => {
-    if(err) throw err
-    console.log('MySQL Connected')
-})
+db.connect((err) => {
+  if (err) console.log("❌ MySQL connection failed:", err);
+  else console.log("✅ Connected to MySQL database");
+});
 
-// ===================== SIGNUP =====================
-app.post('/signup', async (req, res) => {
-    const { name, email, password, confirmPassword, phnumber } = req.body
+// ====================== ROUTES ======================
+app.get("/", (req, res) => {
+  res.send("✅ Backend is running on Render!");
+});
 
-    if(!name || !email || !password || !confirmPassword || !phnumber) {
-        return res.status(400).send({ message: "All fields are required" })
-    }
+// ====================== SIGNUP ======================
+app.post("/signup", async (req, res) => {
+  const { name, email, password, confirmPassword, phnumber } = req.body;
 
-    if(password !== confirmPassword) {
-        return res.status(400).send({ message: "Passwords do not match" })
-    }
+  if (!name || !email || !password || !confirmPassword || !phnumber) {
+    return res.status(400).send({ message: "All fields are required" });
+  }
 
-    try {
-        const hashedPassword = await bcrypt.hash(password, 10)
-        const profilePic = 'profile.png'
+  if (password !== confirmPassword) {
+    return res.status(400).send({ message: "Passwords do not match" });
+  }
 
-        const sql = 'INSERT INTO users (name, phnumber, email, password, profile_pic, role) VALUES (?, ?, ?, ?, ?, ?)'
-db.query(sql, [name, phnumber, email, hashedPassword, profilePic, 'user'], (err, result) => {
-            if(err){
-                console.error("Database Error:", err)
-                return res.status(500).send({ error: err.sqlMessage })
-            }
-            res.send({ message: 'User registered successfully' })
-        })
-    } catch (err) {
-        console.error("Server Error:", err)
-        res.status(500).send({ error: 'Something went wrong' })
-    }
-})
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const profilePic = "profile.png";
 
-// ===================== LOGIN =====================
-app.post('/login', async (req, res) => {
-    const { email, password } = req.body
+    const sql =
+      "INSERT INTO users (name, phnumber, email, password, profile_pic, role) VALUES (?, ?, ?, ?, ?, ?)";
+    db.query(
+      sql,
+      [name, phnumber, email, hashedPassword, profilePic, "user"],
+      (err) => {
+        if (err) return res.status(500).send({ error: err.sqlMessage });
+        res.send({ message: "User registered successfully" });
+      }
+    );
+  } catch (err) {
+    res.status(500).send({ error: "Something went wrong" });
+  }
+});
 
-    if (!email || !password) {
-        return res.status(400).json({ message: "Email and password are required" })
-    }
+// ====================== LOGIN ======================
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
 
-    const adminEmail = "admin@gmail.com"
-const adminPassword = "admin123"
+  if (!email || !password)
+    return res.status(400).json({ message: "Email and password are required" });
 
-if (email === adminEmail && password === adminPassword) {
+  // Admin login
+  const adminEmail = "admin@gmail.com";
+  const adminPassword = "admin123";
+
+  if (email === adminEmail && password === adminPassword) {
     return res.json({
-        message: "Admin login successful",
-        user: {
-            id: 0,
-            name: "Admin",
-            email: adminEmail,
-            phnumber: "N/A",
-            profile_pic: "http://localhost:3000/images/admin.jpeg",
-            role: "admin"
-        }
-    })
+      message: "Admin login successful",
+      user: {
+        id: 0,
+        name: "Admin",
+        email: adminEmail,
+        phnumber: "N/A",
+        profile_pic: "https://subtrack-backend.onrender.com/images/admin.jpeg",
+        role: "admin",
+      },
+    });
+  }
 
-    }
+  // User login
+  const sql = "SELECT * FROM users WHERE email = ?";
+  db.query(sql, [email], async (err, results) => {
+    if (err) return res.status(500).json({ error: err.sqlMessage });
+    if (results.length === 0)
+      return res.status(400).json({ message: "User not found" });
 
-    // ✅ If not admin, continue with user login from DB
-    const sql = 'SELECT * FROM users WHERE email = ?'
-    db.query(sql, [email], async (err, results) => {
-        if (err) return res.status(500).json({ error: err.sqlMessage })
-        if (results.length === 0) return res.status(400).json({ message: 'User not found' })
+    const user = results[0];
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) return res.status(400).json({ message: "Incorrect password" });
 
-        const user = results[0]
-        const match = await bcrypt.compare(password, user.password)
-        if (!match) return res.status(400).json({ message: 'Incorrect password' })
-
-        res.json({
-            message: 'Login successful',
-            user: {
-                id: user.id,
-                name: user.name,
-                email: user.email,
-                phnumber: user.phnumber,
-                profile_pic: `http://localhost:3000/images/${user.profile_pic}`,
-                created_at: user.created_at,
-                role: "user"
-            }
-        })
-    })
-})
-
+    res.json({
+      message: "Login successful",
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        phnumber: user.phnumber,
+        profile_pic: `https://subtrack-backend.onrender.com/images/${user.profile_pic}`,
+        created_at: user.created_at,
+        role: "user",
+      },
+    });
+  });
+});
 
 // ===================== CHANGE PASSWORD =====================
 app.post("/api/change-password", (req, res) => {
