@@ -269,7 +269,7 @@ app.post("/api/update-profile", (req, res) => {
                     name: user.name,
                     email: user.email,
                     phnumber: user.phnumber,
-                    profile_pic: `http://localhost:3000/images/${user.profile_pic}`,
+                    profile_pic: `https://subtrack-1zhh.onrender.com/images/${user.profile_pic}`,
                     created_at: user.created_at
                 }
             })
@@ -317,7 +317,7 @@ app.post("/api/update-profile-pic", (req, res) => {
             name: user.name,
             email: user.email,
             phnumber: user.phnumber,
-            profile_pic: `http://localhost:3000/images/${user.profile_pic}`,
+            profile_pic: `https://subtrack-1zhh.onrender.com/images/${user.profile_pic}`,
             created_at: user.created_at
           }
         })
