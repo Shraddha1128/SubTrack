@@ -131,33 +131,32 @@ app.use("/images", express.static(path.join(__dirname, "public/images")));
 
 // ====================== MYSQL CONNECTION ======================
 const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  host: process.env.DB_HOST || "bm8fo57l7mzsorkslmpj-mysql.services.clever-cloud.com",
+  user: process.env.DB_USER || "upoxr4fseuucthfv",
+  password: process.env.DB_PASSWORD || "v9qWjQkl3XFeyhIfTNM6",
+  database: process.env.DB_NAME || "bm8fo57l7mzsorkslmpj",
+  port: process.env.DB_PORT || 3306,
 });
 
 db.connect((err) => {
-  if (err) console.log("❌ MySQL connection failed:", err);
-  else console.log("✅ Connected to MySQL database");
+  if (err) console.error("❌ MySQL connection failed:", err);
+  else console.log("✅ Connected to Clever Cloud MySQL!");
 });
 
 // ====================== ROUTES ======================
 app.get("/", (req, res) => {
-  res.send("✅ Backend is running on Render!");
+  res.send("✅ SubTrack backend is running and connected to DB!");
 });
 
 // ====================== SIGNUP ======================
 app.post("/signup", async (req, res) => {
   const { name, email, password, confirmPassword, phnumber } = req.body;
 
-  if (!name || !email || !password || !confirmPassword || !phnumber) {
+  if (!name || !email || !password || !confirmPassword || !phnumber)
     return res.status(400).send({ message: "All fields are required" });
-  }
 
-  if (password !== confirmPassword) {
+  if (password !== confirmPassword)
     return res.status(400).send({ message: "Passwords do not match" });
-  }
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -181,11 +180,9 @@ app.post("/signup", async (req, res) => {
 // ====================== LOGIN ======================
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
-
   if (!email || !password)
     return res.status(400).json({ message: "Email and password are required" });
 
-  // Admin login
   const adminEmail = "admin@gmail.com";
   const adminPassword = "admin123";
 
@@ -203,7 +200,6 @@ app.post("/login", async (req, res) => {
     });
   }
 
-  // User login
   const sql = "SELECT * FROM users WHERE email = ?";
   db.query(sql, [email], async (err, results) => {
     if (err) return res.status(500).json({ error: err.sqlMessage });
@@ -228,6 +224,8 @@ app.post("/login", async (req, res) => {
     });
   });
 });
+
+
 
 // ===================== CHANGE PASSWORD =====================
 app.post("/api/change-password", (req, res) => {
@@ -526,4 +524,6 @@ app.get('/api/subscriptions-with-plans', (req, res) => {
 
 
 // ===================== START SERVER =====================
-app.listen(3000, () => console.log('Server running on http://localhost:3000'))
+const PORT = process.env.PORT || 3000 ;
+app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+
